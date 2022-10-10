@@ -21,6 +21,7 @@ RUN set -x \
     git \
     gperf \
     iproute2 \
+    iwyu \
     jq \
     lcov \
     libavahi-client-dev \
