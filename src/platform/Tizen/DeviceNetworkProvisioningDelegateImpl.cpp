@@ -15,10 +15,13 @@
  *    limitations under the License.
  */
 
+#include "DeviceNetworkProvisioningDelegateImpl.h"
+
 #include <lib/support/ErrorStr.h>
 #include <lib/support/logging/CHIPLogging.h>
+#include <platform/CHIPDeviceBuildConfig.h>
 
-#include "DeviceNetworkProvisioningDelegateImpl.h"
+#include "ConnectivityManagerImpl.h"
 
 namespace chip {
 namespace DeviceLayer {

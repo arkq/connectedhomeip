@@ -17,17 +17,13 @@
 
 #pragma once
 
-#include <platform/internal/GenericDeviceNetworkProvisioningDelegateImpl.h>
+#include <lib/core/CHIPError.h>
+#include <lib/support/Span.h>
+
+#include "platform/internal/GenericDeviceNetworkProvisioningDelegateImpl.h"
 
 namespace chip {
 namespace DeviceLayer {
-
-namespace Internal {
-
-template <class ImplClass>
-class GenericDeviceNetworkProvisioningDelegateImpl;
-
-} // namespace Internal
 
 class DeviceNetworkProvisioningDelegateImpl final
     : public Internal::GenericDeviceNetworkProvisioningDelegateImpl<DeviceNetworkProvisioningDelegateImpl>
