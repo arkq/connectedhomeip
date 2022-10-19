@@ -149,7 +149,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
     BaseType_t bleAppCreated    = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
     uint16_t attChipRxHandle[1] = { (uint16_t) value_chipoble_rx };
 
-    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
+    mServiceMode = CHIPoBLEServiceMode::Enabled;
 
     // Check if BLE stack is initialized
     VerifyOrExit(!mFlags.Has(Flags::kK32WBLEStackInitialized), err = CHIP_ERROR_INCORRECT_STATE);
@@ -313,7 +313,7 @@ CHIP_ERROR BLEManagerImpl::_SetAdvertisingEnabled(bool val)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (mFlags.Has(Flags::kAdvertisingEnabled) != val)
     {
@@ -355,7 +355,7 @@ CHIP_ERROR BLEManagerImpl::_GetDeviceName(char * buf, size_t bufSize)
 
 CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_NotSupported)
+    if (mServiceMode == CHIPoBLEServiceMode::NotSupported)
     {
         return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
     }
@@ -835,12 +835,12 @@ CHIP_ERROR BLEManagerImpl::ConfigureAdvertisingData(void)
         advInterval = CHIP_DEVICE_CONFIG_BLE_SLOW_ADVERTISING_INTERVAL_MAX;
     }
 
-    adv_params.minInterval = adv_params.maxInterval = (uint16_t)(advInterval / 0.625F);
+    adv_params.minInterval = adv_params.maxInterval = (uint16_t) (advInterval / 0.625F);
     adv_params.advertisingType                      = gAdvConnectableUndirected_c;
     adv_params.ownAddressType                       = gBleAddrTypePublic_c;
     adv_params.peerAddressType                      = gBleAddrTypePublic_c;
     memset(adv_params.peerAddress, 0, gcBleDeviceAddressSize_c);
-    adv_params.channelMap   = (gapAdvertisingChannelMapFlags_t)(gAdvChanMapFlag37_c | gAdvChanMapFlag38_c | gAdvChanMapFlag39_c);
+    adv_params.channelMap   = (gapAdvertisingChannelMapFlags_t) (gAdvChanMapFlag37_c | gAdvChanMapFlag38_c | gAdvChanMapFlag39_c);
     adv_params.filterPolicy = gProcessAll_c;
 
     err = blekw_start_advertising(&adv_params, &adv, &scanRsp);
@@ -924,7 +924,7 @@ void BLEManagerImpl::DriveBLEState(void)
     VerifyOrExit(mFlags.Has(Flags::kK32WBLEStackInitialized), /* */);
 
     // Start advertising if needed...
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
+    if (mServiceMode == CHIPoBLEServiceMode::Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
     {
         // Start/re-start advertising if not already started, or if there is a pending change
         // to the advertising configuration.
@@ -946,7 +946,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
+        mServiceMode = CHIPoBLEServiceMode::Disabled;
     }
 }
 

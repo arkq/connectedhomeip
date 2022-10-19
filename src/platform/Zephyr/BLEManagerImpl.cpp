@@ -137,7 +137,7 @@ BLEManagerImpl BLEManagerImpl::sInstance;
 
 CHIP_ERROR BLEManagerImpl::_Init()
 {
-    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
+    mServiceMode = CHIPoBLEServiceMode::Enabled;
     mFlags.ClearAll().Set(Flags::kAdvertisingEnabled, CHIP_DEVICE_CONFIG_CHIPOBLE_ENABLE_ADVERTISING_AUTOSTART);
     mFlags.Set(Flags::kFastAdvertisingEnabled, true);
     mGAPConns = 0;
@@ -178,7 +178,7 @@ void BLEManagerImpl::DriveBLEState()
     }
 
     // If the application has enabled CHIPoBLE and BLE advertising...
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled &&
+    if (mServiceMode == CHIPoBLEServiceMode::Enabled &&
         mFlags.Has(Flags::kAdvertisingEnabled)
 #if CHIP_DEVICE_CONFIG_CHIPOBLE_SINGLE_CONNECTION
         // and no connections are active...
@@ -222,7 +222,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %" CHIP_ERROR_FORMAT, err.Format());
-        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
+        mServiceMode = CHIPoBLEServiceMode::Disabled;
     }
 }
 
@@ -343,8 +343,7 @@ CHIP_ERROR BLEManagerImpl::StopAdvertising(void)
 
 CHIP_ERROR BLEManagerImpl::_SetAdvertisingEnabled(bool val)
 {
-    VerifyOrReturnError(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported,
-                        CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrReturnError(mServiceMode != CHIPoBLEServiceMode::NotSupported, CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (mFlags.Has(Flags::kAdvertisingEnabled) != val)
     {
@@ -384,7 +383,7 @@ CHIP_ERROR BLEManagerImpl::_GetDeviceName(char * buf, size_t bufSize)
 
 CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_NotSupported)
+    if (mServiceMode == CHIPoBLEServiceMode::NotSupported)
     {
         return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
     }
@@ -599,7 +598,7 @@ void BLEManagerImpl::_OnPlatformEvent(const ChipDeviceEvent * event)
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %" CHIP_ERROR_FORMAT, err.Format());
-        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
+        mServiceMode = CHIPoBLEServiceMode::Disabled;
         PlatformMgr().ScheduleWork(DriveBLEState, 0);
     }
 }

@@ -24,8 +24,9 @@
 
 #pragma once
 
+#include <ble/BleLayer.h>
 #include <lib/support/CodeUtils.h>
-#include <platform/ConnectivityManager.h>
+#include <platform/CHIPDeviceConfig.h>
 
 #if CHIP_DEVICE_CONFIG_ENABLE_CHIPOBLE
 
@@ -50,8 +51,18 @@ class BLEManager
 public:
     // ===== Members that define the internal interface of the BLEManager
 
-    using CHIPoBLEServiceMode = ConnectivityManager::CHIPoBLEServiceMode;
-    using BLEAdvertisingMode  = ConnectivityManager::BLEAdvertisingMode;
+    enum class CHIPoBLEServiceMode
+    {
+        NotSupported = 0,
+        Enabled      = 1,
+        Disabled     = 2,
+    };
+
+    enum class BLEAdvertisingMode
+    {
+        kFastAdvertising = 0,
+        kSlowAdvertising = 1,
+    };
 
     CHIP_ERROR Init();
     void Shutdown();

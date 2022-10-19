@@ -79,7 +79,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
     err = BleLayer::Init(this, this, this, &DeviceLayer::SystemLayer());
     SuccessOrExit(err);
 
-    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
+    mServiceMode = CHIPoBLEServiceMode::Enabled;
     mFlags.ClearAll().Set(Flags::kAdvertisingEnabled, CHIP_DEVICE_CONFIG_CHIPOBLE_ENABLE_ADVERTISING_AUTOSTART && !mIsCentral);
     mFlags.Set(Flags::kFastAdvertisingEnabled, true);
 
@@ -146,7 +146,7 @@ CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (deviceName != nullptr && deviceName[0] != 0)
     {
@@ -322,7 +322,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
+        mServiceMode = CHIPoBLEServiceMode::Disabled;
         sInstance.mFlags.Clear(Flags::kControlOpInProgress);
     }
 
@@ -559,7 +559,7 @@ void BLEManagerImpl::DriveBLEState()
     VerifyOrExit(!mFlags.Has(Flags::kControlOpInProgress), /* */);
 
     // Initializes the Bluez BLE layer if needed.
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && !mFlags.Has(Flags::kBluezBLELayerInitialized))
+    if (mServiceMode == CHIPoBLEServiceMode::Enabled && !mFlags.Has(Flags::kBluezBLELayerInitialized))
     {
         err = InitBluezBleLayer(mIsCentral, nullptr, mBLEAdvConfig, mpEndpoint);
         SuccessOrExit(err);
@@ -567,7 +567,7 @@ void BLEManagerImpl::DriveBLEState()
     }
 
     // Register the CHIPoBLE application with the Bluez BLE layer if needed.
-    if (!mIsCentral && mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && !mFlags.Has(Flags::kAppRegistered))
+    if (!mIsCentral && mServiceMode == CHIPoBLEServiceMode::Enabled && !mFlags.Has(Flags::kAppRegistered))
     {
         err = BluezGattsAppRegister(mpEndpoint);
         SuccessOrExit(err);
@@ -576,7 +576,7 @@ void BLEManagerImpl::DriveBLEState()
     }
 
     // If the application has enabled CHIPoBLE and BLE advertising...
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
+    if (mServiceMode == CHIPoBLEServiceMode::Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
     {
         // Start/re-start advertising if not already advertising, or if the advertising state of the
         // Bluez BLE layer needs to be refreshed.
@@ -619,7 +619,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
+        mServiceMode = CHIPoBLEServiceMode::Disabled;
     }
 }
 

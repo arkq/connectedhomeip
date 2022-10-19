@@ -107,7 +107,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
     ChipLogError(DeviceLayer, "BleLayer init complete");
     SuccessOrExit(err);
 
-    mServiceMode                   = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
+    mServiceMode                   = CHIPoBLEServiceMode::Enabled;
     CHIPoBLEProfile_write_callback = BLEManagerImpl::HandleRXCharWrite;
     CHIPoBLEProfile_ccc_callback   = BLEManagerImpl::HandleTXCharCCCDWrite;
 
@@ -123,7 +123,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
     bt_create_task();
 
     bt_callback_manager_register_callback(bt_callback_type_app_event,
-                                          (uint32_t)(MODULE_MASK_GAP | MODULE_MASK_GATT | MODULE_MASK_SYSTEM),
+                                          (uint32_t) (MODULE_MASK_GAP | MODULE_MASK_GATT | MODULE_MASK_SYSTEM),
                                           (void *) BleMatterAppEventCallback);
 #ifdef BT_ENABLE_HCI_SNOOP_LOG
     bt_driver_btsnoop_ctrl(1);
@@ -154,8 +154,8 @@ CHIP_ERROR BLEManagerImpl::_SetCHIPoBLEServiceMode(CHIPoBLEServiceMode val)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(val != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_INVALID_ARGUMENT);
-    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(val != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_INVALID_ARGUMENT);
+    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (val != mServiceMode)
     {
@@ -172,7 +172,7 @@ CHIP_ERROR BLEManagerImpl::_SetAdvertisingEnabled(bool val)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (mFlags.Has(Flags::kAdvertisingEnabled) != val)
     {
@@ -220,7 +220,7 @@ CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_NotSupported)
+    if (mServiceMode == CHIPoBLEServiceMode::NotSupported)
     {
         return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
     }
@@ -777,7 +777,7 @@ void BLEManagerImpl::DriveBLEState(void)
     VerifyOrExit(mFlags.Has(Flags::kBLEStackInitialized), /* */);
 
     // Start advertising if needed...
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kAdvertisingEnabled) &&
+    if (mServiceMode == CHIPoBLEServiceMode::Enabled && mFlags.Has(Flags::kAdvertisingEnabled) &&
         NumConnections() < kMaxConnections)
     {
         // Start/re-start advertising if not already started, or if there is a pending change
@@ -800,7 +800,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
+        mServiceMode = CHIPoBLEServiceMode::Disabled;
     }
 }
 

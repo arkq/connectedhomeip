@@ -24,7 +24,9 @@
 
 #pragma once
 
-#include <platform/internal/BLEManager.h>
+#include <platform/ConnectivityManager.h>
+
+#include "BLEManager.h"
 
 namespace chip {
 namespace DeviceLayer {

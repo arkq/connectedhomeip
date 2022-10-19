@@ -4,6 +4,10 @@
     { include: [ '"platform/Tizen/CHIPDevicePlatformConfig.h"', "private", '<platform/CHIPDeviceConfig.h>', "public" ] },
     { include: [ '"platform/Tizen/SystemPlatformConfig.h"', "private", '<system/SystemConfig.h>', "public" ] },
 
+    ## Do not include some Impl headers directly
+    { include: [ '"platform/Tizen/BLEManagerImpl.h"', "private", '<platform/internal/BLEManager.h>', "public" ] },
+    { include: [ '"platform/Tizen/ConnectivityManagerImpl.h"', "private", '<platform/ConnectivityManager.h>', "public" ] },
+
     { include: [ '<platform/Tizen/DeviceInstanceInfoProviderImpl.h>', "private", '"platform/Tizen/DeviceInstanceInfoProviderImpl.h"', "public" ] },
 
     { include: [ '<thread-type.h>', "private", '<thread.h>', "public" ] },

@@ -118,7 +118,7 @@ CHIP_ERROR BLEManagerImpl::_Init(void)
     mFlags.ClearAll().Set(Flags::kAdvertisingEnabled, CHIP_DEVICE_CONFIG_CHIPOBLE_ENABLE_ADVERTISING_AUTOSTART);
     mFlags.Set(Flags::kFastAdvertisingEnabled, true);
 
-    mServiceMode             = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
+    mServiceMode             = CHIPoBLEServiceMode::Enabled;
     OnChipBleConnectReceived = HandleIncomingBleConnection;
 
     err = CreateEventHandler();
@@ -537,7 +537,7 @@ void BLEManagerImpl::EventHandler_init(void)
 
     /* Start tasks of external images */
     ICall_createRemoteTasks();
-    BLEManagerImpl::sBleTaskHndl = (TaskHandle_t)(*((TaskHandle_t *) ICall_getRemoteTaskHandle(0)));
+    BLEManagerImpl::sBleTaskHndl = (TaskHandle_t) (*((TaskHandle_t *) ICall_getRemoteTaskHandle(0)));
     DMMSch_registerClient((TaskHandle_t) BLEManagerImpl::sBleTaskHndl, DMMPolicy_StackRole_BlePeripheral);
     /* set the stacks in default states */
     DMMPolicy_updateStackState(DMMPolicy_StackRole_BlePeripheral, DMMPOLICY_BLE_IDLE);
@@ -775,8 +775,7 @@ void BLEManagerImpl::ProcessEvtHdrMsg(QueuedEvt_t * pMsg)
         bStatus_t status;
 
         /* Verify BLE service mode is enabled */
-        if ((sInstance.mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled) &&
-            sInstance.mFlags.Has(Flags::kBLEStackInitialized))
+        if ((sInstance.mServiceMode == CHIPoBLEServiceMode::Enabled) && sInstance.mFlags.Has(Flags::kBLEStackInitialized))
         {
             if (sInstance.mFlags.Has(Flags::kAdvertisingEnabled))
             {

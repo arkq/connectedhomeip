@@ -21,10 +21,11 @@
  *          Provides an implementation of the BLEManager singleton object
  *          for Tizen platforms.
  */
-// Note: Due to circular dependency include platform/CHIPDeviceLayer.h before
-//       BLEManagerImpl.h (the former includes the latter).
-#include <platform/CHIPDeviceLayer.h>
-#include <platform/Tizen/BLEManagerImpl.h>
+
+/**
+ * Note: Use public include for BLEManager which includes our local
+ *       platform/<PLATFORM>/BLEManagerImpl.h after defining interface class. */
+#include <platform/internal/BLEManager.h>
 
 #if CHIP_DEVICE_CONFIG_ENABLE_CHIPOBLE
 #include <strings.h>
@@ -48,8 +49,8 @@
 #include <lib/support/SetupDiscriminator.h>
 #include <platform/CHIPDeviceBuildConfig.h>
 #include <platform/CHIPDeviceEvent.h>
+#include <platform/CHIPDeviceLayer.h>
 #include <platform/ConfigurationManager.h>
-#include <platform/ConnectivityManager.h>
 #include <platform/PlatformManager.h>
 #include <system/SystemClock.h>
 #include <system/SystemConfig.h>
@@ -889,7 +890,7 @@ void BLEManagerImpl::DriveBLEState()
 
     ChipLogProgress(DeviceLayer, "Enter DriveBLEState");
 
-    if (!mIsCentral && mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && !mFlags.Has(Flags::kAppRegistered))
+    if (!mIsCentral && mServiceMode == CHIPoBLEServiceMode::Enabled && !mFlags.Has(Flags::kAppRegistered))
     {
         ret = RegisterGATTServer();
         VerifyOrExit(ret == BT_ERROR_NONE, ChipLogError(DeviceLayer, "Register GATT Server Failed. ret: %d", ret));
@@ -899,7 +900,7 @@ void BLEManagerImpl::DriveBLEState()
         ExitNow();
     }
 
-    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
+    if (mServiceMode == CHIPoBLEServiceMode::Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
     {
         if (!mFlags.Has(Flags::kAdvertising))
         {
@@ -928,7 +929,7 @@ void BLEManagerImpl::DriveBLEState()
 exit:
     if (ret != BT_ERROR_NONE)
     {
-        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
+        mServiceMode = CHIPoBLEServiceMode::Disabled;
     }
 }
 
@@ -945,7 +946,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
     err = BleLayer::Init(this, this, this, &DeviceLayer::SystemLayer());
     SuccessOrExit(err);
 
-    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
+    mServiceMode = CHIPoBLEServiceMode::Enabled;
 
     ChipLogProgress(DeviceLayer, "Initialize BLE");
     ret = MainLoop::Instance().Init(_BleInitialize);
