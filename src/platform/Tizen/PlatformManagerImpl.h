@@ -25,9 +25,8 @@
 
 #include <lib/core/CHIPError.h>
 
-#include "platform/internal/BLEManager.h"
 #include "platform/internal/GenericPlatformManagerImpl_POSIX.h"
-#include <platform/internal/BLEManager.h>
+#include <platform/ConnectivityManager.h>
 
 namespace chip {
 namespace DeviceLayer {

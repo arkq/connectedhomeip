@@ -39,6 +39,7 @@
 #include <lib/support/SafeInt.h>
 #include <lib/support/Span.h>
 #include <platform/CHIPDeviceConfig.h>
+#include <platform/ConnectivityManager.h>
 #include <platform/PlatformManager.h>
 
 #include "MainLoop.h"
