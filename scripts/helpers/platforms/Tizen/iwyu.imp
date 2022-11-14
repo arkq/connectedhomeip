@@ -9,6 +9,7 @@
     { include: [ '"platform/Tizen/ConnectivityManagerImpl.h"', "private", '<platform/ConnectivityManager.h>', "public" ] },
     { include: [ '"platform/Tizen/PlatformManagerImpl.h"', "private", '<platform/PlatformManager.h>', "public" ] },
     { include: [ '"platform/Tizen/KeyValueStoreManagerImpl.h"', "private", '<platform/KeyValueStoreManager.h>', "public" ] },
+    { include: [ '<platform/Tizen/ThreadStackManagerImpl.h>', "private", '<platform/ThreadStackManager.h>', "public" ] },
 
     { include: [ '<platform/Tizen/DeviceInstanceInfoProviderImpl.h>', "private", '"platform/Tizen/DeviceInstanceInfoProviderImpl.h"', "public" ] },
 

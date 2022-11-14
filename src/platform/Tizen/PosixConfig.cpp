@@ -29,7 +29,6 @@
 #include <lib/support/CodeUtils.h>
 #include <platform/KeyValueStoreManager.h>
 
-#include "KeyValueStoreManagerImpl.h"
 #include "platform/internal/CHIPDeviceLayerInternal.h"
 #include "platform/internal/testing/ConfigUnitTest.h"
 
