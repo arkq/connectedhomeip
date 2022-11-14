@@ -17,19 +17,21 @@
 
 #include "DnssdImpl.h"
 
+#include <net/if.h>
+
 #include <algorithm>
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 // Note: Include dns-sd-internal.h is needed, this source file uses some undocumented functions.
 #include <dns-sd-internal.h>
 #include <dns-sd.h>
 #include <glib.h>
-#include <net/if.h>
 
 #include <inet/InetBuildConfig.h>
 #include <lib/support/CHIPMemString.h>

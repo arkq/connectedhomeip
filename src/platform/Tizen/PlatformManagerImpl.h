@@ -25,10 +25,9 @@
 
 #include <lib/core/CHIPError.h>
 
-// Note: The source file in platform/internal likely has some including problems. At this point, enabling the "BLEManagerImpl.h"
-// header causes the build to crash.
-// IWYU pragma: no_include "platform/Tizen/BLEManagerImpl.h"
+#include "platform/internal/BLEManager.h"
 #include "platform/internal/GenericPlatformManagerImpl_POSIX.h"
+#include <platform/internal/BLEManager.h>
 
 namespace chip {
 namespace DeviceLayer {

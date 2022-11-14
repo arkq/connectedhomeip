@@ -21,6 +21,7 @@
  *          for Tizen platform.
  */
 #include <platform/internal/CHIPDeviceLayerInternal.h> // IWYU pragma: keep
+
 #include <platform/Tizen/ThreadStackManagerImpl.h>
 
 #include <endian.h>
@@ -35,7 +36,6 @@
 #include <platform/PlatformManager.h>
 #include <platform/ThreadStackManager.h>
 
-#include "PlatformManagerImpl.h"
 #include "ThreadStackManagerImpl.h"
 #include "platform/internal/CHIPDeviceLayerInternal.h"
 

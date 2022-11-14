@@ -25,7 +25,7 @@
 /**
  * Note: Use public include for BLEManager which includes our local
  *       platform/<PLATFORM>/BLEManagerImpl.h after defining interface class. */
-#include <platform/internal/BLEManager.h>
+#include "platform/internal/BLEManager.h"
 
 #if CHIP_DEVICE_CONFIG_ENABLE_CHIPOBLE
 #include <strings.h>
@@ -60,8 +60,6 @@
 #include "CHIPDevicePlatformEvent.h"
 #include "ChipDeviceScanner.h"
 #include "MainLoop.h"
-#include "PlatformManagerImpl.h"
-#include "platform/internal/BLEManager.h"
 
 using namespace ::chip;
 using namespace ::chip::Ble;

@@ -23,6 +23,7 @@
  *          Utilities for interacting with multiple file partitions and maps
  *          key-value config calls to the correct partition.
  */
+
 #include "PosixConfig.h"
 
 #include <lib/support/CodeUtils.h>

@@ -7,6 +7,8 @@
     ## Do not include some Impl headers directly
     { include: [ '"platform/Tizen/BLEManagerImpl.h"', "private", '<platform/internal/BLEManager.h>', "public" ] },
     { include: [ '"platform/Tizen/ConnectivityManagerImpl.h"', "private", '<platform/ConnectivityManager.h>', "public" ] },
+    { include: [ '"platform/Tizen/PlatformManagerImpl.h"', "private", '<platform/PlatformManager.h>', "public" ] },
+    { include: [ '"platform/Tizen/KeyValueStoreManagerImpl.h"', "private", '<platform/KeyValueStoreManager.h>', "public" ] },
 
     { include: [ '<platform/Tizen/DeviceInstanceInfoProviderImpl.h>', "private", '"platform/Tizen/DeviceInstanceInfoProviderImpl.h"', "public" ] },
 

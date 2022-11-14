@@ -20,8 +20,7 @@
 #include <lib/support/ErrorStr.h>
 #include <lib/support/logging/CHIPLogging.h>
 #include <platform/CHIPDeviceBuildConfig.h>
-
-#include "ConnectivityManagerImpl.h"
+#include <platform/ConnectivityManager.h>
 
 namespace chip {
 namespace DeviceLayer {
