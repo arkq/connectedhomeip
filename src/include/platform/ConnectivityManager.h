@@ -38,8 +38,6 @@
 #include <inet/TCPEndPoint.h>
 #endif
 
-#include "internal/BLEManager.h"
-
 namespace chip {
 
 namespace Ble {
@@ -131,8 +129,12 @@ public:
         kWiFiAPState_Deactivating,
     };
 
-    using CHIPoBLEServiceMode = Internal::BLEManager::CHIPoBLEServiceMode;
-    using BLEAdvertisingMode  = Internal::BLEManager::BLEAdvertisingMode;
+    enum CHIPoBLEServiceMode
+    {
+        kCHIPoBLEServiceMode_NotSupported = 0,
+        kCHIPoBLEServiceMode_Enabled      = 1,
+        kCHIPoBLEServiceMode_Disabled     = 2,
+    };
 
     enum ThreadDeviceType
     {
@@ -142,6 +144,12 @@ public:
         kThreadDeviceType_MinimalEndDevice            = 3,
         kThreadDeviceType_SleepyEndDevice             = 4,
         kThreadDeviceType_SynchronizedSleepyEndDevice = 5,
+    };
+
+    enum BLEAdvertisingMode
+    {
+        kFastAdvertising = 0,
+        kSlowAdvertising = 1,
     };
 
     enum class SEDIntervalMode

@@ -49,8 +49,8 @@
 #include <lib/support/SetupDiscriminator.h>
 #include <platform/CHIPDeviceBuildConfig.h>
 #include <platform/CHIPDeviceEvent.h>
-#include <platform/CHIPDeviceLayer.h>
 #include <platform/ConfigurationManager.h>
+#include <platform/ConnectivityManager.h>
 #include <platform/PlatformManager.h>
 #include <system/SystemClock.h>
 #include <system/SystemConfig.h>
@@ -888,7 +888,7 @@ void BLEManagerImpl::DriveBLEState()
 
     ChipLogProgress(DeviceLayer, "Enter DriveBLEState");
 
-    if (!mIsCentral && mServiceMode == CHIPoBLEServiceMode::Enabled && !mFlags.Has(Flags::kAppRegistered))
+    if (!mIsCentral && mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && !mFlags.Has(Flags::kAppRegistered))
     {
         ret = RegisterGATTServer();
         VerifyOrExit(ret == BT_ERROR_NONE, ChipLogError(DeviceLayer, "Register GATT Server Failed. ret: %d", ret));
@@ -898,7 +898,7 @@ void BLEManagerImpl::DriveBLEState()
         ExitNow();
     }
 
-    if (mServiceMode == CHIPoBLEServiceMode::Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
     {
         if (!mFlags.Has(Flags::kAdvertising))
         {
@@ -927,7 +927,7 @@ void BLEManagerImpl::DriveBLEState()
 exit:
     if (ret != BT_ERROR_NONE)
     {
-        mServiceMode = CHIPoBLEServiceMode::Disabled;
+        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
     }
 }
 
@@ -944,7 +944,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
     err = BleLayer::Init(this, this, this, &DeviceLayer::SystemLayer());
     SuccessOrExit(err);
 
-    mServiceMode = CHIPoBLEServiceMode::Enabled;
+    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
 
     ChipLogProgress(DeviceLayer, "Initialize BLE");
     ret = MainLoop::Instance().Init(_BleInitialize);

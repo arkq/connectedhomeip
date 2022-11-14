@@ -120,7 +120,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
 
     memset(mBleConnections, 0, sizeof(mBleConnections));
     memset(mIndConfId, kUnusedIndex, sizeof(mIndConfId));
-    mServiceMode = CHIPoBLEServiceMode::Enabled;
+    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
 
     // Create FreeRTOS sw timer for BLE timeouts and interval change.
     sbleAdvTimeoutTimer = xTimerCreate("BleAdvTimer",       // Just a text name, not used by the RTOS kernel
@@ -156,7 +156,7 @@ CHIP_ERROR BLEManagerImpl::_SetAdvertisingEnabled(bool val)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (mFlags.Has(Flags::kAdvertisingEnabled) != val)
     {
@@ -198,7 +198,7 @@ CHIP_ERROR BLEManagerImpl::_GetDeviceName(char * buf, size_t bufSize)
 
 CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
-    if (mServiceMode == CHIPoBLEServiceMode::NotSupported)
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_NotSupported)
     {
         return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
     }
@@ -383,7 +383,7 @@ void BLEManagerImpl::DriveBLEState(void)
     VerifyOrExit(mFlags.Has(Flags::kEFRBLEStackInitialized), /* */);
 
     // Start advertising if needed...
-    if (mServiceMode == CHIPoBLEServiceMode::Enabled && mFlags.Has(Flags::kAdvertisingEnabled) &&
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kAdvertisingEnabled) &&
         NumConnections() < kMaxConnections)
     {
         // Start/re-start advertising if not already started, or if there is a pending change
@@ -406,7 +406,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = CHIPoBLEServiceMode::Disabled;
+        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
     }
 }
 

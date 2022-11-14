@@ -142,13 +142,13 @@ CHIP_ERROR BLEManagerImpl::_Init()
     err = BleLayer::Init(this, this, &DeviceLayer::SystemLayer());
     SuccessOrExit(err);
 
-    mServiceMode = CHIPoBLEServiceMode::Enabled;
+    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
 
     // Check if BLE stack is initialized
     VerifyOrExit(!mFlags.Has(Flags::kAMEBABLEStackInitialized), err = CHIP_ERROR_INCORRECT_STATE);
 
     err = MapBLEError(bt_matter_adapter_init());
-    chip_blemgr_set_callback_func((chip_blemgr_callback) (ble_callback_dispatcher), this);
+    chip_blemgr_set_callback_func((chip_blemgr_callback)(ble_callback_dispatcher), this);
     SuccessOrExit(err);
 
     // Set related flags
@@ -202,8 +202,8 @@ void BLEManagerImpl::HandleTXCharCCCDWrite(int conn_id, int indicationsEnabled, 
     // whether the client is enabling or disabling indications.
     {
         ChipDeviceEvent event;
-        event.Type                    = (indicationsEnabled || notificationsEnabled) ? DeviceEventType::kCHIPoBLESubscribe
-                                                                                     : DeviceEventType::kCHIPoBLEUnsubscribe;
+        event.Type = (indicationsEnabled || notificationsEnabled) ? DeviceEventType::kCHIPoBLESubscribe
+                                                                  : DeviceEventType::kCHIPoBLEUnsubscribe;
         event.CHIPoBLESubscribe.ConId = conn_id;
         PlatformMgr().PostEventOrDie(&event);
     }
@@ -356,7 +356,7 @@ CHIP_ERROR BLEManagerImpl::_SetAdvertisingEnabled(bool val)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (val)
     {
@@ -425,7 +425,7 @@ CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (deviceName != NULL && deviceName[0] != 0)
     {
@@ -723,7 +723,7 @@ void BLEManagerImpl::DriveBLEState(void)
     VerifyOrExit(mFlags.Has(Flags::kAMEBABLEStackInitialized), /* */);
 
     // Start advertising if needed...
-    if (mServiceMode == CHIPoBLEServiceMode::Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kAdvertisingEnabled))
     {
         // Start/re-start advertising if not already started, or if there is a pending change
         // to the advertising configuration.
@@ -746,7 +746,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = CHIPoBLEServiceMode::Disabled;
+        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
     }
 }
 
@@ -846,7 +846,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        sInstance.mServiceMode = CHIPoBLEServiceMode::Disabled;
+        sInstance.mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
     }
 
     // Schedule DriveBLEState() to run.

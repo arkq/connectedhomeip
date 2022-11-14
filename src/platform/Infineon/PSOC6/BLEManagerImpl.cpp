@@ -134,7 +134,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
         CY_ASSERT(0);
     }
 
-    mServiceMode = CHIPoBLEServiceMode::Enabled;
+    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
     if (CHIP_DEVICE_CONFIG_CHIPOBLE_ENABLE_ADVERTISING_AUTOSTART)
     {
         mFlags.Set(Flags::kFlag_AdvertisingEnabled, true);
@@ -164,7 +164,7 @@ CHIP_ERROR BLEManagerImpl::_SetAdvertisingEnabled(bool val)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (mFlags.Has(Flags::kFlag_AdvertisingEnabled) != val)
     {
@@ -185,7 +185,7 @@ CHIP_ERROR BLEManagerImpl::_SetAdvertisingMode(BLEAdvertisingMode mode)
 
 CHIP_ERROR BLEManagerImpl::_GetDeviceName(char * buf, size_t bufSize)
 {
-    if (mServiceMode == CHIPoBLEServiceMode::NotSupported)
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_NotSupported)
     {
         return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
     }
@@ -200,7 +200,7 @@ CHIP_ERROR BLEManagerImpl::_GetDeviceName(char * buf, size_t bufSize)
 
 CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
-    if (mServiceMode == CHIPoBLEServiceMode::NotSupported)
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_NotSupported)
     {
         return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
     }
@@ -385,7 +385,7 @@ void BLEManagerImpl::DriveBLEState(void)
     }
 
     // If the application has enabled CHIPoBLE and BLE advertising...
-    if (mServiceMode == CHIPoBLEServiceMode::Enabled &&
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled &&
         mFlags.Has(Flags::kFlag_AdvertisingEnabled)
 #if CHIP_DEVICE_CONFIG_CHIPOBLE_SINGLE_CONNECTION
         // and no connections are active...
@@ -439,7 +439,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = CHIPoBLEServiceMode::Disabled;
+        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
     }
 }
 

@@ -36,14 +36,15 @@ const char * GenericConnectivityManagerImpl_BLE<ImplClass>::_CHIPoBLEServiceMode
 {
     switch (mode)
     {
-    case ConnectivityManager::CHIPoBLEServiceMode::NotSupported:
+    case ConnectivityManager::kCHIPoBLEServiceMode_NotSupported:
         return "NotSupported";
-    case ConnectivityManager::CHIPoBLEServiceMode::Enabled:
+    case ConnectivityManager::kCHIPoBLEServiceMode_Enabled:
         return "Disabled";
-    case ConnectivityManager::CHIPoBLEServiceMode::Disabled:
+    case ConnectivityManager::kCHIPoBLEServiceMode_Disabled:
         return "Enabled";
+    default:
+        return "(unknown)";
     }
-    return "(unknown)";
 }
 
 // Fully instantiate the template class in whatever compilation unit includes this file.

@@ -108,7 +108,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
     err = BleLayer::Init(this, this, this, &DeviceLayer::SystemLayer());
     SuccessOrExit(err);
 
-    mServiceMode = CHIPoBLEServiceMode::Enabled;
+    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
     mFlags.ClearAll().Set(Flags::kAdvertisingEnabled, CHIP_DEVICE_CONFIG_CHIPOBLE_ENABLE_ADVERTISING_AUTOSTART && !mIsCentral);
     mFlags.Set(Flags::kFastAdvertisingEnabled, true);
 
@@ -181,7 +181,7 @@ CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (deviceName != nullptr && deviceName[0] != 0)
     {
@@ -345,7 +345,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = CHIPoBLEServiceMode::Disabled;
+        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
         sInstance.mFlags.Clear(Flags::kControlOpInProgress);
     }
 
@@ -799,7 +799,7 @@ void BLEManagerImpl::DriveBLEState()
     VerifyOrExit(!mFlags.Has(Flags::kControlOpInProgress), /* */);
 
     // Initializes the Bluez BLE layer if needed.
-    if (mServiceMode == CHIPoBLEServiceMode::Enabled && !mFlags.Has(Flags::kWebOSBLELayerInitialized))
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && !mFlags.Has(Flags::kWebOSBLELayerInitialized))
     {
         mFlags.Set(Flags::kWebOSBLELayerInitialized);
     }
@@ -808,7 +808,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = CHIPoBLEServiceMode::Disabled;
+        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
     }
 }
 

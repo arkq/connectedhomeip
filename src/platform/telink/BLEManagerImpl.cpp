@@ -767,7 +767,7 @@ CHIP_ERROR BLEManagerImpl::_GetDeviceName(char * buf, size_t bufSize)
 CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * devName)
 {
 
-    if (mServiceMode == CHIPoBLEServiceMode::NotSupported)
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_NotSupported)
     {
         ChipLogError(DeviceLayer, "Unsupported");
 

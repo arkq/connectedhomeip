@@ -171,7 +171,7 @@ CHIP_ERROR BLEManagerImpl::_Init()
     mFlags.Set(Flags::kFastAdvertisingEnabled, true);
     mNumGAPCons = 0;
     memset(reinterpret_cast<void *>(mCons), 0, sizeof(mCons));
-    mServiceMode = CHIPoBLEServiceMode::Enabled;
+    mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
     memset(mDeviceName, 0, sizeof(mDeviceName));
 
     PlatformMgr().ScheduleWork(DriveBLEState, 0);
@@ -184,7 +184,7 @@ CHIP_ERROR BLEManagerImpl::_SetAdvertisingEnabled(bool val)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
 
     if (val)
     {
@@ -250,7 +250,7 @@ CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    VerifyOrExit(mServiceMode != CHIPoBLEServiceMode::NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
     if (deviceName != NULL && deviceName[0] != 0)
     {
         if (strlen(deviceName) >= kMaxDeviceNameLength)
@@ -450,7 +450,7 @@ void BLEManagerImpl::DriveBLEState(void)
     }
 
     // Initializes the ESP BLE layer if needed.
-    if (mServiceMode == CHIPoBLEServiceMode::Enabled && !mFlags.Has(Flags::kESPBLELayerInitialized))
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled && !mFlags.Has(Flags::kESPBLELayerInitialized))
     {
         err = InitESPBleLayer();
         SuccessOrExit(err);
@@ -462,7 +462,7 @@ void BLEManagerImpl::DriveBLEState(void)
     }
 
     // If the application has enabled CHIPoBLE and BLE advertising...
-    if (mServiceMode == CHIPoBLEServiceMode::Enabled &&
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled &&
         mFlags.Has(Flags::kAdvertisingEnabled)
 #if CHIP_DEVICE_CONFIG_CHIPOBLE_SINGLE_CONNECTION
         // and no connections are active...
@@ -553,7 +553,7 @@ void BLEManagerImpl::DriveBLEState(void)
     }
 
     // Stop the CHIPoBLE GATT service if needed.
-    if (mServiceMode != CHIPoBLEServiceMode::Enabled && mFlags.Has(Flags::kGATTServiceStarted))
+    if (mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kGATTServiceStarted))
     {
         // TODO: Not supported
     }
@@ -562,7 +562,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        mServiceMode = CHIPoBLEServiceMode::Disabled;
+        mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
     }
 }
 
@@ -647,7 +647,7 @@ CHIP_ERROR BLEManagerImpl::InitESPBleLayer(void)
     ble_hs_cfg.sm_their_key_dist = BLE_SM_PAIR_KEY_DIST_ENC | BLE_SM_PAIR_KEY_DIST_ID;
 
     // Register the CHIPoBLE GATT attributes with the ESP BLE layer if needed.
-    if (mServiceMode == CHIPoBLEServiceMode::Enabled)
+    if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_Enabled)
     {
         ble_svc_gap_init();
         ble_svc_gatt_init();
@@ -1047,7 +1047,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "Disabling CHIPoBLE service due to error: %s", ErrorStr(err));
-        sInstance.mServiceMode = CHIPoBLEServiceMode::Disabled;
+        sInstance.mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Disabled;
     }
 
     // Schedule DriveBLEState() to run.
