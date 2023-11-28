@@ -4,7 +4,10 @@ import("//build_overrides/build.gni")
 import("//build_overrides/chip.gni")
 import("//build_overrides/pigweed.gni")
 
+import("${chip_root}/src/lib/core/core.gni")
 import("${chip_root}/src/platform/device.gni")
+
+# import("${chip_root}/src/platform/logging/logging.gni")
 
 source_set("headers") {
   public = [ "LogV.h" ]
@@ -57,8 +60,10 @@ static_library("stdio") {
 # Depending on this target (via public_deps) pulls in the stdio
 # logger and ensures it takes precendce over the platform backend.
 group("force_stdio") {
-  deps = [ ":stdio" ]
-  public_configs = [ ":force_stdio_config" ]
+  if (chip_force_stdio_logging) {
+    deps = [ ":stdio" ]
+    public_configs = [ ":force_stdio_config" ]
+  }
 }
 
 config("force_stdio_config") {

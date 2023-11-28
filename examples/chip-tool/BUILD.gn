@@ -39,6 +39,8 @@ config("config") {
     "CONFIG_USE_INTERACTIVE_MODE=${config_use_interactive_mode}",
   ]
 
+  # chip_force_stdio_logging = true
+
   # Note: CONFIG_USE_LOCAL_STORAGE is tested for via #ifdef, not #if.
   if (config_use_local_storage) {
     defines += [ "CONFIG_USE_LOCAL_STORAGE" ]
@@ -126,7 +128,7 @@ executable("chip-tool") {
 
   deps = [
     ":chip-tool-utils",
-    "${chip_root}/src/platform/logging:force_stdio",
+    # "${chip_root}/src/platform/logging:force_stdio",
   ]
 
   output_dir = root_out_dir

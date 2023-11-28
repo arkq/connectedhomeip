@@ -95,8 +95,9 @@ template("chip_test_suite") {
     }
 
     if (current_os != "zephyr" && current_os != "mbed") {
-      # Depend on stdio logging, and have it take precedence over the default platform backend
-      public_deps += [ "${chip_root}/src/platform/logging:force_stdio" ]
+      # chip_force_stdio_logging = true
+      # # Depend on stdio logging, and have it take precedence over the default platform backend
+      # public_deps += [ "${chip_root}/src/platform/logging:force_stdio" ]
     }
   }
   if (chip_link_tests) {
@@ -193,8 +194,9 @@ template("chip_test_suite_using_nltest") {
     }
 
     if (current_os != "zephyr" && current_os != "mbed") {
-      # Depend on stdio logging, and have it take precedence over the default platform backend
-      public_deps += [ "${chip_root}/src/platform/logging:force_stdio" ]
+      # chip_force_stdio_logging = true
+      # # Depend on stdio logging, and have it take precedence over the default platform backend
+      # public_deps += [ "${chip_root}/src/platform/logging:force_stdio" ]
     }
   }
   if (chip_link_tests) {

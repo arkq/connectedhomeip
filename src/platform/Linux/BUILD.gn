@@ -19,6 +19,7 @@ import("${build_root}/config/linux/pkg_config.gni")
 
 import("${chip_root}/src/lib/core/core.gni")
 import("${chip_root}/src/platform/device.gni")
+import("${chip_root}/src/platform/logging/logging.gni")
 
 assert(chip_device_platform == "linux")
 
@@ -75,7 +76,7 @@ static_library("Linux") {
 
   deps = [ "${chip_root}/src/setup_payload" ]
 
-  if (!chip_use_external_logging) {
+  if (!chip_use_external_logging && !chip_logging_force_stdio) {
     sources += [ "Logging.cpp" ]
     deps += [ "${chip_root}/src/platform/logging:headers" ]
   }
