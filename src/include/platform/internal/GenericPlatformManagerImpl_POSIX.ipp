@@ -38,8 +38,10 @@
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <fstream>
 #include <poll.h>
 #include <sched.h>
+#include <thread>
 #include <unistd.h>
 
 namespace chip {
@@ -224,6 +226,17 @@ void GenericPlatformManagerImpl_POSIX<ImplClass>::_RunEventLoop()
         Impl()->LockChipStack();
 
         SystemLayerSocketsLoop().HandleEvents();
+
+        std::ifstream sleepFile("/tmp/chip-sleep");
+        if (sleepFile.is_open())
+        {
+            std::string line;
+            std::getline(sleepFile, line);
+            int sleepTime = std::stoi(line);
+            ChipLogDetail(DeviceLayer, "SLEEPING FOR %d ms", sleepTime);
+            std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+            sleepFile.close();
+        }
 
         ProcessDeviceEvents();
     } while (mShouldRunEventLoop.load(std::memory_order_relaxed));
