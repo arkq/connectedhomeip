@@ -89,7 +89,7 @@ void OnRegister(dnssd_error_e result, dnssd_service_h service, void * data)
         ChipLogError(DeviceLayer, "DNSsd %s: Error: %s", __func__, get_error_message(result));
         rCtx->mCallback(rCtx->mCbContext, nullptr, nullptr, MATTER_PLATFORM_ERROR(result));
         // After this point, the context might be no longer valid
-        rCtx->mInstance.RemoveContext(rCtx);
+        rCtx->RemoveFromOwner();
         return;
     }
 
@@ -117,7 +117,7 @@ gboolean OnBrowseTimeout(void * userData)
     bCtx->mCallback(bCtx->mCbContext, bCtx->mServices.data(), bCtx->mServices.size(), true, CHIP_NO_ERROR);
 
     // After this point the context might be no longer valid
-    bCtx->mInstance.RemoveContext(bCtx);
+    bCtx->RemoveFromOwner();
 
     // This is a one-shot timer
     return G_SOURCE_REMOVE;
@@ -210,7 +210,7 @@ exit:
     {
         bCtx->mCallback(bCtx->mCbContext, nullptr, 0, true, MATTER_PLATFORM_ERROR(ret));
         // After this point the context might be no longer valid
-        bCtx->mInstance.RemoveContext(bCtx);
+        bCtx->RemoveFromOwner();
     }
 }
 
@@ -344,7 +344,7 @@ void OnResolve(dnssd_error_e result, dnssd_service_h service, void * userData)
         ChipLogProgress(DeviceLayer, "DNSsd Handle resolve task on schedule lambda");
 
         rCtx->Finalize(CHIP_NO_ERROR);
-        rCtx->mInstance.RemoveContext(rCtx);
+        rCtx->RemoveFromOwner();
     });
     VerifyOrExit(err == CHIP_NO_ERROR,
                  ChipLogError(DeviceLayer, "Failed to schedule resolve task: %" CHIP_ERROR_FORMAT, err.Format()));
@@ -353,7 +353,7 @@ void OnResolve(dnssd_error_e result, dnssd_service_h service, void * userData)
 
 exit:
     rCtx->Finalize(ret != DNSSD_ERROR_NONE ? MATTER_PLATFORM_ERROR(ret) : err);
-    rCtx->mInstance.RemoveContext(rCtx);
+    rCtx->RemoveFromOwner();
 }
 
 CHIP_ERROR ResolveAsync(chip::Dnssd::ResolveContext * rCtx)
@@ -423,6 +423,11 @@ RegisterContext::~RegisterContext()
     }
 }
 
+void RegisterContext::RemoveFromOwner()
+{
+    mInstance.RemoveContext(this);
+}
+
 BrowseContext::BrowseContext(DnssdTizen & instance, const char * type, Dnssd::DnssdServiceProtocol protocol, uint32_t interfaceId,
                              DnssdBrowseCallback callback, void * context) :
     mInstance(instance),
@@ -438,6 +443,11 @@ BrowseContext::~BrowseContext()
         g_source_destroy(mTimeoutSource);
         g_source_unref(mTimeoutSource);
     }
+}
+
+void BrowseContext::RemoveFromOwner()
+{
+    mInstance.RemoveContext(this);
 }
 
 ResolveContext::ResolveContext(DnssdTizen & instance, const char * name, const char * type, uint32_t interfaceId,
@@ -463,6 +473,11 @@ void ResolveContext::Finalize(CHIP_ERROR error)
     chip::Inet::IPAddress ipAddr = mResult.mAddress.value();
 
     mCallback(mCbContext, &mResult, chip::Span<chip::Inet::IPAddress>(&ipAddr, 1), CHIP_NO_ERROR);
+}
+
+void ResolveContext::RemoveFromOwner()
+{
+    mInstance.RemoveContext(this);
 }
 
 CHIP_ERROR DnssdTizen::Init(DnssdAsyncReturnCallback initCallback, DnssdAsyncReturnCallback errorCallback, void * context)
