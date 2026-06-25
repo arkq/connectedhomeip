@@ -263,9 +263,13 @@ CHIP_ERROR DiagnosticDataProviderImpl::GetThreadMetrics(ThreadMetrics ** threadM
         thread->id = taskStatusArray[i].xTaskNumber;
         thread->stackFreeMinimum.Emplace(taskStatusArray[i].usStackHighWaterMark);
 
-        // Todo: Calculate stack size and current free stack value and assign.
-        thread->stackFreeCurrent.ClearValue();
+#ifdef CONFIG_FREERTOS_TASK_FUNCTION_WRAPPER
+        thread->stackSize.Emplace(uxTaskGetStackSize(taskStatusArray[i].xHandle));
+        thread->stackFreeCurrent.Emplace(uxTaskGetFreeStackSize(taskStatusArray[i].xHandle));
+#else
         thread->stackSize.ClearValue();
+        thread->stackFreeCurrent.ClearValue();
+#endif
 
         thread->Next = head;
         head         = thread;
